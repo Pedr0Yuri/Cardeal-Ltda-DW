@@ -20,3 +20,7 @@ pip install -r requirements.txt
 ```bash
 python gerar_dados.py ; python etl_bronze.py ; python etl_silver.py ; python etl_gold.py ; python -m streamlit run app_dashboard.py
 ``` 
+3. (Opcional) Exportar camada Gold para CSV:
+```bash
+python exportar_gold.py
+``` 
