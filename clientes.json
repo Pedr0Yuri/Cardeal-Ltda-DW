@@ -1,0 +1,77 @@
+[
+    {
+        "id_cliente": 1,
+        "nome": "Bazar Cardeal - Belo Horizonte (MG)",
+        "uf": "MG"
+    },
+    {
+        "id_cliente": 2,
+        "nome": "Bazar Cardeal - Recife Centro (PE)",
+        "uf": "PE"
+    },
+    {
+        "id_cliente": 3,
+        "nome": "Bazar Cardeal - Rio Sul (RJ)",
+        "uf": "RJ"
+    },
+    {
+        "id_cliente": 4,
+        "nome": "Bazar Cardeal - Cuiaba (MT)",
+        "uf": "MT"
+    },
+    {
+        "id_cliente": 5,
+        "nome": "Bazar Cardeal - Niteroi (RJ)",
+        "uf": "RJ"
+    },
+    {
+        "id_cliente": 6,
+        "nome": "Bazar Cardeal - Brasilia Asa Norte (DF)",
+        "uf": "DF"
+    },
+    {
+        "id_cliente": 7,
+        "nome": "Bazar Cardeal - Olinda (PE)",
+        "uf": "PE"
+    },
+    {
+        "id_cliente": 8,
+        "nome": "Bazar Cardeal - Caruaru (PE)",
+        "uf": "PE"
+    },
+    {
+        "id_cliente": 9,
+        "nome": "Bazar Cardeal - Copacabana (RJ)",
+        "uf": "RJ"
+    },
+    {
+        "id_cliente": 10,
+        "nome": "Bazar Cardeal - Goiania (GO)",
+        "uf": "GO"
+    },
+    {
+        "id_cliente": 11,
+        "nome": "Bazar Cardeal - Jaboatao (PE)",
+        "uf": "PE"
+    },
+    {
+        "id_cliente": 12,
+        "nome": "Bazar Cardeal - Petrolina (PE)",
+        "uf": "PE"
+    },
+    {
+        "id_cliente": 13,
+        "nome": "Bazar Cardeal - Sao Paulo Capital (SP)",
+        "uf": "SP"
+    },
+    {
+        "id_cliente": 14,
+        "nome": "Bazar Cardeal - Salvador (BA)",
+        "uf": "BA"
+    },
+    {
+        "id_cliente": 15,
+        "nome": "Bazar Cardeal - Feira de Santana (BA)",
+        "uf": "BA"
+    }
+]
