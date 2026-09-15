@@ -306,7 +306,7 @@ with tab2:
     
     k4, k5 = st.columns(2)
     k4.metric("Subsidiárias Ativas", clientes_unicos)
-    k5.metric("Margem Média", f"{margem_t2:.1f}%")
+    k5.metric("Margem Consolidada", f"{margem_t2:.1f}%")
 
     st.markdown("---")
 
@@ -391,7 +391,7 @@ with tab3:
     margem_t3 = (lucro_t3 / fat_t3 * 100) if fat_t3 > 0 else 0
 
     if not df_tab3.empty:
-        vendas_agrup = df_tab3.groupby('nome_produto')['quantidade'].sum()
+        vendas_agrup = df_tab3.groupby('nome_produto')['id_venda'].nunique()
         qtd_top = vendas_agrup.max()
         tops = vendas_agrup[vendas_agrup == qtd_top].index.tolist()
         produto_top = " e ".join(tops)
@@ -403,7 +403,7 @@ with tab3:
     k1, k2, k3 = st.columns(3)
     k1.metric("Faturamento por Categoria", formatar_brl(fat_t3))
     k2.metric("Lucro por Categoria", formatar_brl(lucro_t3))
-    k3.metric("Margem Média", f"{margem_t3:.1f}%")
+    k3.metric("Margem Consolidada", f"{margem_t3:.1f}%")
 
     st.write("")
 
@@ -420,16 +420,37 @@ with tab3:
     vendas_prod['unidades_por_lote'] = vendas_prod['unidades'] / vendas_prod['lotes']
     vendas_prod = vendas_prod.sort_values('unidades', ascending=False)
 
-    fig_qtd = px.bar(vendas_prod, x='nome_produto', y='unidades',
-                     title='Volume de Escoamento: Lotes vs Unidades', 
-                     color='nome_produto', color_discrete_sequence=px.colors.qualitative.Safe,
-                     custom_data=['lotes', 'unidades_por_lote'])
+    fig_qtd = go.Figure()
     
-    fig_qtd.update_traces(
-        texttemplate='%{y} un.', textposition='outside',
-        hovertemplate='<b>%{x}</b><br>Volume Total: %{y} unidades<br>Lotes Despachados: %{customdata[0]} lotes<br>Média por Lote: %{customdata[1]:.1f} un./lote<extra></extra>'
+    # Barra 1: Unidades
+    fig_qtd.add_trace(go.Bar(
+        x=vendas_prod['nome_produto'], 
+        y=vendas_prod['unidades'], 
+        name='Unidades', 
+        marker_color='#1f77b4', 
+        text=vendas_prod['unidades'].apply(lambda x: f'{x:,.0f} un.'), 
+        textposition='outside'
+    ))
+
+    # Barra 2: Lotes
+    fig_qtd.add_trace(go.Bar(
+        x=vendas_prod['nome_produto'], 
+        y=vendas_prod['lotes'], 
+        name='Lotes', 
+        marker_color='#ff7f0e',
+        text=vendas_prod['lotes'].apply(lambda x: f'{x:,.0f} lotes'),
+        textposition='outside'
+    ))
+
+    fig_qtd.update_layout(
+        title='Volume de Escoamento: Lotes vs Unidades', 
+        height=ALTURA_GRAFICO, 
+        barmode='group', 
+        xaxis_title='Produto', 
+        yaxis_title='Quantidade', 
+        legend=dict(orientation='h', yanchor='bottom', y=1.02, font=dict(size=12)), 
+        margin=dict(t=80, b=60)
     )
-    fig_qtd.update_layout(height=ALTURA_GRAFICO, xaxis_title='Produto', yaxis_title='Quantidade Total (Unidades)', showlegend=False, margin=dict(t=60, b=60))
     st.plotly_chart(fig_qtd, use_container_width=True)
 
     dados_prod = df_tab3.groupby('nome_produto').agg(

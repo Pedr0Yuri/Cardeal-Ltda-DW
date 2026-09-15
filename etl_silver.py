@@ -11,6 +11,7 @@ conn = sqlite3.connect('ecommerce_dw.db')
 df_vendas = pd.read_sql("SELECT * FROM bronze_vendas", conn)
 df_clientes = pd.read_sql("SELECT * FROM bronze_clientes", conn)
 df_ibge = pd.read_sql("SELECT * FROM bronze_ibge_estados", conn)
+df_produtos = pd.read_sql("SELECT * FROM bronze_produtos", conn)
 
 total_original = len(df_vendas)
 registros_descartados = {}
@@ -56,12 +57,11 @@ print(f"  > {invalidos_qtd} registros removidos por quantidade <= 0 (lote invál
 print("\n--- Etapa 4: Padronização de Datas ---")
 df_vendas['data_venda'] = pd.to_datetime(df_vendas['data_venda'], format='mixed', dayfirst=False)
 
-# --- 5. Criação de colunas derivadas ---
-print("\n--- Etapa 5: Criação de Colunas Derivadas ---")
-df_vendas['valor_total'] = df_vendas['valor'] * df_vendas['quantidade']
-df_vendas['custo_total'] = df_vendas['custo'] * df_vendas['quantidade']
-df_vendas['lucro'] = df_vendas['valor_total'] - df_vendas['custo_total']
-print("  > Colunas criadas: valor_total, custo_total, lucro.")
+# --- 5. Padronização de Produtos ---
+print("\n--- Etapa 5: Padronização de Produtos ---")
+df_produtos['nome_produto'] = df_produtos['nome_produto'].str.strip()
+df_produtos['categoria'] = df_produtos['categoria'].str.strip()
+print("  > Nomes e categorias de produtos padronizados (strip).")
 
 # --- 6. Padronização de Clientes ---
 print("\n--- Etapa 6: Padronização de Clientes ---")
@@ -94,6 +94,7 @@ print(f"  > {len(df_clientes_integrado)} subsidiárias enriquecidas com dados ge
 # --- Carga na Silver ---
 df_vendas.to_sql("silver_vendas", conn, if_exists="replace", index=False)
 df_clientes_integrado.to_sql("silver_clientes", conn, if_exists="replace", index=False)
+df_produtos.to_sql("silver_produtos", conn, if_exists="replace", index=False)
 
 # --- Relatório Final de Qualidade ---
 total_descartados = sum(registros_descartados.values())

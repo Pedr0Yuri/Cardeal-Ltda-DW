@@ -12,6 +12,7 @@ cursor.execute("PRAGMA foreign_keys = ON;")
 # extração dos dados limpos da camada Silver
 df_vendas = pd.read_sql("SELECT * FROM silver_vendas", conn)
 df_clientes = pd.read_sql("SELECT * FROM silver_clientes", conn)
+df_produtos = pd.read_sql("SELECT * FROM silver_produtos", conn)
 
 # preparando os DataFrames da Camada Gold
 print("Preparando Tabelas Dimensão e Fato...")
@@ -27,24 +28,16 @@ dim_tempo['trimestre'] = dim_tempo['data_venda'].dt.quarter
 # datetime para string
 dim_tempo['data_venda'] = dim_tempo['data_venda'].dt.strftime('%Y-%m-%d')
 
-produtos_unicos = df_vendas['id_produto'].unique()
-dim_produto = pd.DataFrame({'id_produto': produtos_unicos})
-
-mapa_produtos = {
-    100: ('Notebook', 'Eletrônicos'),
-    101: ('Celular', 'Eletrônicos'),
-    102: ('Monitor', 'Eletrônicos'),
-    103: ('Geladeira', 'Eletrodomésticos'),
-    104: ('Fogão', 'Eletrodomésticos'),
-    105: ('Micro-ondas', 'Eletrodomésticos'),
-    106: ('PlayStation 5', 'Eletrônicos')
-}
-
-dim_produto['nome_produto'] = dim_produto['id_produto'].map(lambda x: mapa_produtos.get(x, ('Desconhecido', 'Outros'))[0])
-dim_produto['categoria'] = dim_produto['id_produto'].map(lambda x: mapa_produtos.get(x, ('Desconhecido', 'Outros'))[1])
+dim_produto = df_produtos[['id_produto', 'nome_produto', 'categoria']].copy()
 
 fato_vendas = df_vendas.copy()
 fato_vendas['id_tempo'] = fato_vendas['data_venda'].dt.strftime('%Y%m%d').astype(int)
+
+# Cálculo das métricas analíticas (Fato)
+fato_vendas['valor_total'] = fato_vendas['valor'] * fato_vendas['quantidade']
+fato_vendas['custo_total'] = fato_vendas['custo'] * fato_vendas['quantidade']
+fato_vendas['lucro'] = fato_vendas['valor_total'] - fato_vendas['custo_total']
+
 fato_vendas = fato_vendas[['id_venda', 'id_cliente', 'id_produto', 'id_tempo', 'quantidade', 'valor', 'custo', 'valor_total', 'custo_total', 'lucro']]
 
 # tabelas com PK e FK
