@@ -443,7 +443,7 @@ with tab3:
     ))
 
     fig_qtd.update_layout(
-        title='Volume de Escoamento: Lotes vs Unidades', 
+        title='Volume de Escoamento: Lotes x Unidades', 
         height=ALTURA_GRAFICO, 
         barmode='group', 
         xaxis_title='Produto', 
